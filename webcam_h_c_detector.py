@@ -1,14 +1,11 @@
-#Trackbars sekmesinden ışığa göre objenin görünüp görünmediğini ayarlayabilirsin.
-#Bazı yerlerde hangi değişken ne döndürdüğüne bakmak için print vs ekledim.Onlara takılma.
-#yuvarlaklık,kaçgen olduğu,boyutu,çemberselliği,konvex olup olmadığı gibi bir sürü koşul koydum.
-#Şuanda kırmızı renk elle ayarlanıyor.Fakat rangelemek istersen, 50-58 arasını commentten al ,60-61 i commentle.
-#130.satırdaki if'ten sonra objenin orta koordinatları veriliyor.
+#This script written to detect half circle objects with webcam.
+#I chose red and half circled objects.You can chose your filter too, please write Read.me on git.
 #@ dasmehdix
 import cv2
 import numpy as np
 
 def pixDis(a1,b1,a2,b2):
-	#distance between points 
+	#distance between points(pixels) 
 	y = b2-b1
 	x = a2-a1
 	return np.sqrt(x*x+y*y)
@@ -130,7 +127,7 @@ while True:
 										cX = int(M["m10"] / M["m00"])
 										cY = int(M["m01"] / M["m00"])
 										if abs(center[0]-cX) < 40:
-    										#OBJENIN DAIRE OLDUGUNA KARAR VERDIGIMIZ YER BURASI cX,cY objenin tam orta noktasıdır.
+    										#This place is where we understand that it's a half circle
 											cv2.drawContours(frame, [approx], 0, (0, 0, 0), 5)
 											cv2.line(frame,(cX,cY),(cX,cY-60),(0,255,0),thickness=2)
 											cv2.line(frame,(cX,cY),(cX+60,cY),(255,0,0),thickness=2)
@@ -152,7 +149,7 @@ while True:
 				cv2.putText(frame, "Circle", (x, y), font, 1, (0, 0, 0)) '''
 
 
-	cv2.imshow("Erik Tech Labs", frame)
+	cv2.imshow("FrameR", frame)
 	cv2.imshow("Maske", mask)
 
 	key = cv2.waitKey(1)
