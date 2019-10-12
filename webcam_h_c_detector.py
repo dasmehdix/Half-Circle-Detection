@@ -27,7 +27,7 @@ cv2.createTrackbar("U-V", "Trackbars", 243, 255, nothing)
 
 font = cv2.FONT_HERSHEY_COMPLEX
 
-#shape_image = cv2.imread("export.png")
+
 global center
 
 while True:
