@@ -155,8 +155,8 @@ while True:
 												cv2.putText(frame,"Yarim Daire Bulundu",(x,y),font,1,(100,244,237),thickness=2)
 												oldArea = area
 												oldCnt = cnt
-												cv2.imshow("Erik Tech Labs", frame)
-												cv2.imshow("Maske", mask)
+												#cv2.imshow("Erik Tech Labs", frame)
+												#cv2.imshow("Maske", mask)
 	elif flag == 1:
 		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 		img = cv2.medianBlur(gray, 37)
@@ -213,7 +213,7 @@ while True:
 				cv2.circle(frame, (i[0], i[1]), 2, (0, 0, 255), 3)
 
 
-		cv2.imshow('camera', frame)
+		#cv2.imshow('camera', frame)
 			
 
 
@@ -225,7 +225,8 @@ while True:
 			cv2.putText(frame,"Half-Circle",(x,y),font,1,(0,255,0))    
 		elif 10 < len(approx) < 20:
 			cv2.putText(frame, "Circle", (x, y), font, 1, (0, 0, 0)) '''
-
+		
+	cv2.imshow("Frame",frame)
 	key = cv2.waitKey(1)
 	if key == 27:
 		break
