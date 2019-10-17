@@ -1,13 +1,13 @@
 # Half-Circle-Detection
 ## Introduction
 This work done by me to path a drone in parkour system.Parkour system contain red half-circle pasteboards and traffic signs(like turn righ-left).The script is like:
-
-1.  Drone look for objects
-2.  Drone detect both objects(traffic sign and half circle)
-3.  Drone compares which object is closer
-4.  if object is circle, Drone pass throguht circle
-5.  if object is traffic sign, Drone execute command(like turn right and look for new object)
-
+```
+1. Drone look for objects
+2. Drone detect both objects(traffic sign and half circle)
+3. Drone compares which object is closer
+4. If object is circle, Drone pass throguht circle
+5. If object is traffic sign, Drone execute command(like turn right and look for new object)
+```
 ## Dependicies
 ```
 - Opencv
