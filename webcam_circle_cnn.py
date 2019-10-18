@@ -1,3 +1,7 @@
+#282. satırdaki coordinates 
+#287. satırdaki point_circle
+#290. satırdaki point_trafik
+#Bunlar objelerin koordinatları.Hepsinden çek çünkü if else içinde çalışıyor.
 import os
 import numpy as np 
 import cv2
@@ -84,6 +88,26 @@ def draw_rects_on_img(img, rects):
 		cv2.rectangle(img_copy, (x,y), (x+w,y+h), (0,255,0), 2)
 	return img_copy
 
+def maskit(hsv):
+	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+	
+	l_h = cv2.getTrackbarPos("L-H", "Trackbars")
+	l_s = cv2.getTrackbarPos("L-S", "Trackbars")
+	l_v = cv2.getTrackbarPos("L-V", "Trackbars")
+	u_h = cv2.getTrackbarPos("U-H", "Trackbars")
+	u_s = cv2.getTrackbarPos("U-S", "Trackbars")
+	u_v = cv2.getTrackbarPos("U-V", "Trackbars")
+
+	# lower mask (0-10)
+
+	lower_red = np.array([l_h, l_s, l_v])
+	upper_red = np.array([u_h, u_s, u_v])
+
+	mask = cv2.inRange(hsv, lower_red, upper_red)
+	kernel = np.ones((5, 5), np.uint8)
+	mask = cv2.dilate(mask, kernel)
+	mask[np.where(mask==0)] = 0
+	return mask
 
 
 def hog_extra_and_svm_class(proposal, clf, resize = (64, 64)):
@@ -121,6 +145,27 @@ def nothing(x):
 	# any operation
 	pass
 
+def contourit(mask):
+	# Contours detection
+	if int(cv2.__version__[0]) > 3:
+		# Opencv 4.x.x
+		contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	else:
+		# Opencv 3.x.x
+		_, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+	return contours
+
+def compareit(x,y,pcircle,ptrafik):
+	points = []
+	if x >= y:
+		cv2.putText(frame,"Daire Daha yakinda",(30,30),font,1,(100,244,237),thickness=2)
+		points = pcircle
+	else:
+		cv2.putText(frame,"Trafik Daha Yakinda",(30,30),font,1,(254,111,111),thickness=2)
+		points = ptrafik
+	return points
+
+
 cap = cv2.VideoCapture(0)
 cols = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 rows = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -133,12 +178,16 @@ cv2.createTrackbar("L-S", "Trackbars", 66, 255, nothing)
 cv2.createTrackbar("L-V", "Trackbars", 134, 255, nothing)
 cv2.createTrackbar("U-H", "Trackbars", 180, 255, nothing)
 cv2.createTrackbar("U-S", "Trackbars", 255, 255, nothing)
-cv2.createTrackbar("U-V", "Trackbars", 243, 255, nothing)
+cv2.createTrackbar("U-V", "Trackbars", 255, 255, nothing)
 
 font = cv2.FONT_HERSHEY_COMPLEX
 global center
 
 while (1):
+	area_circle = 0
+	area_traffic_sign = 0
+	point_trafik = []
+	point_circle = []
 	ret, img = cap.read()
 	frame = img.copy()
 	img_bin = preprocess_img(img,False)
@@ -164,36 +213,14 @@ while (1):
 			cv2.rectangle(frame,(rect[0],rect[1]), (rect[0]+rect[2],rect[1]+rect[3]), (0,255,0), 2)
 			cv2.putText(frame, cls_name, (rect[0], rect[1]), 1, 1, (0,0,255),2)
 			area_traffic_sign = rect[2]*rect[3]
+			point_trafik = [xc,yc]
+			# burası trafik isaretini buldugumuz yer area_traffic sign = 
 	
 	frame = cv2.GaussianBlur(frame,(5,5),0)
 	gray= cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+	mask = maskit(gray)
+	contours = contourit(mask)
 	
-	l_h = cv2.getTrackbarPos("L-H", "Trackbars")
-	l_s = cv2.getTrackbarPos("L-S", "Trackbars")
-	l_v = cv2.getTrackbarPos("L-V", "Trackbars")
-	u_h = cv2.getTrackbarPos("U-H", "Trackbars")
-	u_s = cv2.getTrackbarPos("U-S", "Trackbars")
-	u_v = cv2.getTrackbarPos("U-V", "Trackbars")
-
-	# lower mask (0-10)
-
-	lower_red = np.array([l_h, l_s, l_v])
-	upper_red = np.array([u_h, u_s, u_v])
-
-	mask = cv2.inRange(hsv, lower_red, upper_red)
-	kernel = np.ones((5, 5), np.uint8)
-	mask = cv2.dilate(mask, kernel)
-	mask[np.where(mask==0)] = 0
-	
-
-	# Contours detection
-	if int(cv2.__version__[0]) > 3:
-		# Opencv 4.x.x
-		contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-	else:
-		# Opencv 3.x.x
-		_, contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 	oldArea = 0
 	oldCnt = 0
 	for cnt in contours:
@@ -249,21 +276,16 @@ while (1):
 											cv2.putText(frame,"Yarim Daire Bulundu",(x,y),font,1,(100,244,237),thickness=2)
 											oldArea = area
 											oldCnt = cnt
-
-	try:
-		if area_circle >= 0 and area_traffic_sign >= 0:
-			if area_circle >= area_traffic_sign:
-				cv2.putText(frame,"Daire Daha yakinda",(30,30),font,1,(100,244,237),thickness=2)
-			else:
-				cv2.putText(frame,"Trafik Daha Yakinda",(30,30),font,1,(254,111,111),thickness=2)
-		else:
-			cv2.putText(frame,"Tek veya Hiç Bulgu",(30,400),font,1,(1,3,237),thickness=2)
-	except:
-		cv2.putText(frame,"Tek veya Hiç Bulgu",(30,400),font,1,(1,3,237),thickness=2)
-	
-	area_circle = 0
-	area_traffic_sign = 0
-
+											point_circle = [cX,cY]
+	if area_circle > 0 and area_traffic_sign > 0:
+		coordinates = compareit(area_circle,area_traffic_sign,point_circle,point_trafik)
+		print("Buyuk Nesnemizin Koordinatı :", coordinates)
+	else:
+		cv2.putText(frame,"Tek Bulgu veya Bulgu Yok",(30,450),font,1,(1,3,237),thickness=2)	
+		if area_circle > 0:
+			print("Nesnemizin Koordinatı(cember) :",point_circle)
+		elif area_traffic_sign >0:
+			print("Nesnemizin Koordinatı(trafik) :",point_trafik)
 
 
 	cv2.imshow("detect result", frame)
