@@ -22,5 +22,8 @@ This work done by me to path a drone in parkour system.Parkour system contain re
 - `webcam_circle_cnn.py   :` This script detect both traffic sign and half circle in the same frame and find which one is closer.You have to download [this](https://github.com/ZhouJiaHuan/traffic-sign-detection/blob/master/svm_hog_classification/svm_model.pkl) file and put it to the "svm_hog_classification" folder to run script.
 -This section will be updated soon!!!
 
+## Solved Problems
+To use traffic sign detector just download [ZhouJiaHuan's](https://github.com/ZhouJiaHuan/traffic-sign-detection/blob/master/svm_hog_classification/svm_model.pkl) svm model to the path of "svm_hog_classification" folder.
+
 ## Credit
 Thanks to him, I used [ZhouJiaHuan's](https://github.com/ZhouJiaHuan/traffic-sign-detection) implemention of traffic sign detection.
