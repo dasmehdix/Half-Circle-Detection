@@ -1,7 +1,7 @@
 # Half-Circle-Detection [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 ![image1](https://github.com/dasmehdix/Half-Circle-Detection/blob/master/example_photos/parkur.gif)
 ## Introduction
-This work done by me to path a drone in parkour system.Parkour system contain red half-circle pasteboards and traffic signs(like turn righ-left).The script is like:
+This work done by me to path a drone in parkour system. Parkour system contain red half-circle pasteboards and traffic signs (like turn righ-left). The script is like:
 ```
 1. Drone look for objects
 2. Drone detect both objects(traffic sign and half circle)
@@ -24,6 +24,8 @@ This work done by me to path a drone in parkour system.Parkour system contain re
 
 ## Solved Problems
 To use traffic sign detector just download [ZhouJiaHuan's](https://github.com/ZhouJiaHuan/traffic-sign-detection/blob/master/svm_hog_classification/svm_model.pkl) svm model to the path of "svm_hog_classification" folder.
+
+### Warning! These scripts blocks a bit hard coded. A bit code review needed but it still works! :)
 
 ## Credit
 Thanks to him, I used [ZhouJiaHuan's](https://github.com/ZhouJiaHuan/traffic-sign-detection) implemention of traffic sign detection.
